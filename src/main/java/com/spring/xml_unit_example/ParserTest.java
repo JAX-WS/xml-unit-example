@@ -132,22 +132,6 @@ public class ParserTest {
 		String nodeName;
 		String nodeValue;
 
-		public String getNodeName() {
-			return nodeName;
-		}
-
-		public void setNodeName(String nodeName) {
-			this.nodeName = nodeName;
-		}
-
-		public String getNodeValue() {
-			return nodeValue;
-		}
-
-		public void setNodeValue(String nodeValue) {
-			this.nodeValue = nodeValue;
-		}
-
 		public Node(String nodeName, String nodeValue) {
 			super();
 			this.nodeName = nodeName;
