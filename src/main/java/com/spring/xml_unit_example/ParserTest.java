@@ -40,6 +40,8 @@ public class ParserTest {
 				System.out.println("****************************\n");
 				nodePos++;
 				if (list2 == null) {
+					System.out.println("Total child nodes in file1: " + list1.size());
+					System.out.println("Total child nodes in file2: " + "0");
 					t.displaySingleList(list1);
 				} else {
 					t.displayList(list1, list2);
@@ -56,6 +58,8 @@ public class ParserTest {
 				System.out.println("For Parent node at //books/book[" + nodePos + "]");
 				nodePos++;
 				if (list1 == null) {
+					System.out.println("Total child nodes in file1: " + "0");
+					System.out.println("Total child nodes in file2: " + list2.size());
 					t.displaySingleList(list2);
 				} else {
 					t.displayList(list1, list2);
