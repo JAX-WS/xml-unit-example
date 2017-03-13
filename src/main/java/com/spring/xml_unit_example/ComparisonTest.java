@@ -26,6 +26,8 @@ public class ComparisonTest {
 		test.displayParentNodeCounts();
 		test.displayChildNodes();
 
+		
+		
 	}
 
 	public void displayChildNodes() throws XPathExpressionException,
