@@ -18,8 +18,8 @@ import com.spring.xml_unit_example.Parser.Node;
 public class ParserTest {
 
 	Parser p = null;
-	Map<String, List<Node>> dataMap1 = null;
-	Map<String, List<Node>> dataMap2 = null;
+	Map<String, Map<String,String>> dataMap1 = null;
+	Map<String, Map<String,String>> dataMap2 = null;
 
 	@Before
 	public void setup() throws XPathExpressionException {
