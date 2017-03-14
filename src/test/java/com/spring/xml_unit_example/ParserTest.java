@@ -1,8 +1,9 @@
 package com.spring.xml_unit_example;
 
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -12,17 +13,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.spring.xml_unit_example.Parser.Node;
-
 @SuppressWarnings("deprecation")
 public class ParserTest {
 
 	Parser p = null;
-	Map<String, Map<String,String>> dataMap1 = null;
-	Map<String, Map<String,String>> dataMap2 = null;
+	Map<String, Map<String, String>> dataMap1 = null;
+	Map<String, Map<String, String>> dataMap2 = null;
 
 	@Before
-	public void setup() throws XPathExpressionException {
+	public void setup() throws XPathExpressionException, FileNotFoundException,
+			UnsupportedEncodingException {
 		p = new Parser();
 		dataMap1 = p.getXmlToDataMap("file1.xml");
 		dataMap2 = p.getXmlToDataMap("file2.xml");
@@ -30,7 +30,7 @@ public class ParserTest {
 	}
 
 	@Test
-	//  data matching
+	// data matching
 	public void testGetXmlToDataMap() {
 
 		Assert.assertEquals(dataMap1, dataMap2);
@@ -47,20 +47,26 @@ public class ParserTest {
 	// childnode count comparison
 	public void testChildNodeCount() {
 
-		Set<String> keySet1 = dataMap1.keySet();
-		Set<String> keySet2 = dataMap2.keySet();
+		List<Integer> childNodeCounter1 = p.childNodeCount(dataMap1);
+		List<Integer> childNodeCounter2 = p.childNodeCount(dataMap2);
 
-		int childNodeSum1 = 0;
-		for (String s : keySet1) {
-			childNodeSum1 = +dataMap1.get(s).size();
+		System.out
+				.println("child node counts at each parent positions of file1.xml");
+		for (int c : childNodeCounter1) {
+
+			System.out.print(c + ",\t");
 		}
 
-		int childNodeSum2 = 0;
-		for (String s : keySet2) {
-			childNodeSum2 = +dataMap2.get(s).size();
-		}
+		System.out
+				.println("\nchild node counts at each parent positions of file2.xml");
+		for (int c : childNodeCounter2) {
 
-		Assert.assertEquals(childNodeSum1, childNodeSum2);
+			System.out.print(c + ",\t");
+		}
+		System.out
+				.println("\ncomparing childnode counts of 2 files respective to parent node psoitions");
+		Assert.assertEquals(childNodeCounter1, childNodeCounter2);
+
 	}
 
 	@After

@@ -3,6 +3,7 @@ package com.spring.xml_unit_example;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,50 +14,47 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 public class Parser {
-	static Map<String, List<Node>> dataMap = null;
 
-	static PrintWriter writer = null;
-	static {
-		try {
-			writer = new PrintWriter(String.valueOf("compare_"
-					+ System.currentTimeMillis())
-					+ ".txt", "UTF-8");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	Map<String, Map<String, String>> dataMap1 = null;
+	// System.out.println(dataMap1);
+	Map<String, Map<String, String>> dataMap2 = null;
+	PrintWriter writer = null;
+
+	public Parser() throws XPathExpressionException, FileNotFoundException,
+			UnsupportedEncodingException {
+		super();
+		// TODO Auto-generated constructor stub
+		dataMap1 = getXmlToDataMap("file1.xml");
+		dataMap2 = getXmlToDataMap("file2.xml");
+		writer = new PrintWriter(String.valueOf("compare_"
+				+ System.currentTimeMillis())
+				+ ".txt", "UTF-8");
 	}
 
-	public static void main(String[] args) throws XPathExpressionException {
+	public static void main(String[] args) throws XPathExpressionException,
+			FileNotFoundException, UnsupportedEncodingException {
 
 		Parser t = new Parser();
-		dataMap = new LinkedHashMap<String, List<Node>>();
-		Map<String, Map<String, String>> dataMap1 = t
-				.getXmlToDataMap("file1.xml");
-		// System.out.println(dataMap1);
-		Map<String, Map<String, String>> dataMap2 = t
-				.getXmlToDataMap("file2.xml");
 
 		System.out.println("total parent nodes in file1.xml: "
-				+ dataMap1.size());
-		t.writeToAFile("total parent nodes in file1.xml: " + dataMap1.size());
+				+ t.dataMap1.size());
+		t.writeToAFile("total parent nodes in file1.xml: " + t.dataMap1.size());
 		System.out.println("total parent nodes in file2.xml: "
-				+ dataMap2.size());
-		t.writeToAFile("\ntotal parent nodes in file2.xml: " + dataMap2.size());
+				+ t.dataMap2.size());
+		t.writeToAFile("\ntotal parent nodes in file2.xml: "
+				+ t.dataMap2.size());
 		int nodePos = 1;
-		if (dataMap1.size() > dataMap2.size()) {
-			for (Map.Entry<String, Map<String, String>> entry : dataMap1
+		if (t.dataMap1.size() > t.dataMap2.size()) {
+			for (Map.Entry<String, Map<String, String>> entry : t.dataMap1
 					.entrySet()) {
 				String key1 = entry.getKey();
 				Map<String, String> list1 = entry.getValue();
-				Map<String, String> list2 = dataMap2.get(key1);
+				Map<String, String> list2 = t.dataMap2.get(key1);
 				System.out.println("\n*******************************");
 				t.writeToAFile("\n*******************************");
 				System.out.println("For Parent node at //books/book[" + nodePos
@@ -79,12 +77,12 @@ public class Parser {
 				}
 			}
 		} else {
-			System.out.println(dataMap1.size());
-			for (Map.Entry<String, Map<String, String>> entry : dataMap2
+
+			for (Map.Entry<String, Map<String, String>> entry : t.dataMap2
 					.entrySet()) {
 				String key2 = entry.getKey();
 				Map<String, String> list2 = entry.getValue();
-				Map<String, String> list1 = dataMap1.get(key2);
+				Map<String, String> list1 = t.dataMap1.get(key2);
 
 				System.out.println("\n*******************************");
 				t.writeToAFile("\n*******************************");
@@ -106,7 +104,7 @@ public class Parser {
 				}
 			}
 
-			writer.close();
+			t.writer.close();
 		}
 	}
 
@@ -115,7 +113,7 @@ public class Parser {
 		Map<String, Map<String, String>> dataMap = new LinkedHashMap<String, Map<String, String>>();
 		for (int i = 1;; i++) {
 			Map<String, String> childNodes = this.displayNode(fileName, i);
-			if (childNodes.size() == 0) {
+			if (childNodes == null) {
 				break;
 			} else {
 				dataMap.put(String.valueOf(i), childNodes);
@@ -193,12 +191,21 @@ public class Parser {
 		NodeList elements = null;
 		Map<String, String> childNodes = new LinkedHashMap<String, String>();
 
-		String expression = "/books/book[" + (pos) + "]/*";
+		String childNodeExpression = "/books/book[" + (pos) + "]/*";
+		String parentNodeExpression = "/books/book[" + (pos) + "]";
 		XPath xPath = XPathFactory.newInstance().newXPath();
-		InputSource xml = new InputSource(this.getClass().getClassLoader()
+		InputSource xml1 = new InputSource(this.getClass().getClassLoader()
+				.getResourceAsStream(fileName));
+		InputSource xml2 = new InputSource(this.getClass().getClassLoader()
 				.getResourceAsStream(fileName));
 		// System.out.println("retrieving child nodes for: " + expression);
-		elements = (NodeList) xPath.compile(expression).evaluate(xml,
+
+		Node node = (Node) xPath.evaluate(parentNodeExpression, xml1,
+				XPathConstants.NODE);
+		if (node == null) {
+			return null;
+		}
+		elements = (NodeList) xPath.compile(childNodeExpression).evaluate(xml2,
 				XPathConstants.NODESET);
 		if (elements.getLength() == 0) {
 			return childNodes;
@@ -218,66 +225,13 @@ public class Parser {
 		writer.write(str);
 	}
 
-	class Node {
-		String nodeName;
-		String nodeValue;
-
-		public Node(String nodeName, String nodeValue) {
-			super();
-			this.nodeName = nodeName;
-			this.nodeValue = nodeValue;
+	public List<Integer> childNodeCount(Map<String, Map<String, String>> dataMap) {
+		List<Integer> nodeCounter = null;
+		nodeCounter = new ArrayList<Integer>();
+		for (Map.Entry<String, Map<String, String>> entry : dataMap.entrySet()) {
+			nodeCounter.add(entry.getValue().size());
 		}
-
-		public Node() {
-			super();
-			// TODO Auto-generated constructor stub
-		}
-
-		@Override
-		public String toString() {
-			return "Node [nodeName=" + nodeName + ", nodeValue=" + nodeValue
-					+ "]";
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + getOuterType().hashCode();
-			result = prime * result
-					+ ((nodeName == null) ? 0 : nodeName.hashCode());
-			result = prime * result
-					+ ((nodeValue == null) ? 0 : nodeValue.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			Node other = (Node) obj;
-			if (!getOuterType().equals(other.getOuterType()))
-				return false;
-			if (nodeName == null) {
-				if (other.nodeName != null)
-					return false;
-			} else if (!nodeName.equals(other.nodeName))
-				return false;
-			if (nodeValue == null) {
-				if (other.nodeValue != null)
-					return false;
-			} else if (!nodeValue.equals(other.nodeValue))
-				return false;
-			return true;
-		}
-
-		private Parser getOuterType() {
-			return Parser.this;
-		}
-
+		return nodeCounter;
 	}
+
 }
