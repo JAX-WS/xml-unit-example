@@ -21,8 +21,7 @@ public class ParserTest {
 	Map<String, Map<String, String>> dataMap2 = null;
 
 	@Before
-	public void setup() throws XPathExpressionException, FileNotFoundException,
-			UnsupportedEncodingException {
+	public void setup() throws XPathExpressionException, FileNotFoundException, UnsupportedEncodingException {
 		p = new Parser();
 		dataMap1 = p.getXmlToDataMap("file1.xml");
 		dataMap2 = p.getXmlToDataMap("file2.xml");
@@ -46,25 +45,48 @@ public class ParserTest {
 	public void testChildNodeCount() {
 		List<Integer> childNodeCounter1 = p.childNodeCount(dataMap1);
 		List<Integer> childNodeCounter2 = p.childNodeCount(dataMap2);
-		
-		System.out
-				.println("child node counts at each parent positions of file1.xml");
+
+		System.out.println("child node counts at each parent positions of file1.xml");
 		for (int c : childNodeCounter1) {
 
 			System.out.print(c + ",\t");
 		}
 
-		System.out
-				.println("\nchild node counts at each parent positions of file2.xml");
+		System.out.println("\nchild node counts at each parent positions of file2.xml");
 		for (int c : childNodeCounter2) {
 
 			System.out.print(c + ",\t");
 		}
-		
-		System.out
-				.println("\ncomparing childnode counts of 2 files respective to parent node psoitions");
+
+		System.out.println("\ncomparing childnode counts of 2 files respective to parent node psoitions");
 		Assert.assertEquals(childNodeCounter1, childNodeCounter2);
 
+	}
+
+	@Test
+	public void uniqueCaseComparisonTest() {
+		if (dataMap1.size() > dataMap2.size()) {
+			for (Map.Entry<String, Map<String, String>> entry : dataMap1.entrySet()) {
+				String key1 = entry.getKey();
+				Map<String, String> list1 = entry.getValue();
+				Map<String, String> list2 = dataMap2.get(key1);
+				
+				boolean flag=p.isUniqueMatch(list1, list2);
+				
+				Assert.assertEquals(true, flag);
+			}
+		} else {
+			for (Map.Entry<String, Map<String, String>> entry : dataMap2.entrySet()) {
+				String key2 = entry.getKey();
+				Map<String, String> list2 = entry.getValue();
+				Map<String, String> list1 = dataMap1.get(key2);
+				
+				boolean flag=p.isUniqueMatch(list1, list2);
+				
+				Assert.assertEquals(true, flag);
+			}
+
+		}
 	}
 
 	@After
