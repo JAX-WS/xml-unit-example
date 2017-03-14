@@ -127,6 +127,7 @@ public class Parser {
 		for (String key : keys) {
 			System.out.println("\n");
 			this.writeToAFile("\n");
+			
 			System.out.print("in file1: [nodeName,nodeValue]=" + "[" + key
 					+ "," + list.get(key) + "]");
 			this.writeToAFile("in file1: [nodeName,nodeValue]=" + "[" + key
@@ -205,8 +206,10 @@ public class Parser {
 		if (node == null) {
 			return null;
 		}
+		
 		elements = (NodeList) xPath.compile(childNodeExpression).evaluate(xml2,
 				XPathConstants.NODESET);
+		
 		if (elements.getLength() == 0) {
 			return childNodes;
 		}
@@ -224,7 +227,8 @@ public class Parser {
 	public void writeToAFile(String str) {
 		writer.write(str);
 	}
-
+	
+	
 	public List<Integer> childNodeCount(Map<String, Map<String, String>> dataMap) {
 		List<Integer> nodeCounter = null;
 		nodeCounter = new ArrayList<Integer>();

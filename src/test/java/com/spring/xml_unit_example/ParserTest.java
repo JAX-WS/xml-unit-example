@@ -32,24 +32,21 @@ public class ParserTest {
 	@Test
 	// data matching
 	public void testGetXmlToDataMap() {
-
 		Assert.assertEquals(dataMap1, dataMap2);
 	}
 
 	@Test
 	// parent code count comparison
 	public void testParentNodeCount() {
-
 		Assert.assertEquals(dataMap1.size(), dataMap2.size());
 	}
 
 	@Test
 	// childnode count comparison
 	public void testChildNodeCount() {
-
 		List<Integer> childNodeCounter1 = p.childNodeCount(dataMap1);
 		List<Integer> childNodeCounter2 = p.childNodeCount(dataMap2);
-
+		
 		System.out
 				.println("child node counts at each parent positions of file1.xml");
 		for (int c : childNodeCounter1) {
@@ -63,6 +60,7 @@ public class ParserTest {
 
 			System.out.print(c + ",\t");
 		}
+		
 		System.out
 				.println("\ncomparing childnode counts of 2 files respective to parent node psoitions");
 		Assert.assertEquals(childNodeCounter1, childNodeCounter2);
