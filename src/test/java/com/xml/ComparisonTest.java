@@ -41,15 +41,15 @@ public class ComparisonTest {
 
 	@Test
 	public void countChildNodeForEachParent() {
-		List<Map<String, String>> arrList1 = new ArrayList<Map<String, String>>();
-		List<Map<String, String>> arrList2 = new ArrayList<Map<String, String>>();
+		List<Integer> arrList1 = new ArrayList<Integer>();
+		List<Integer> arrList2 = new ArrayList<Integer>();
 
 		for (Map.Entry<String, Map<String, String>> entry : dataMap1.entrySet()) {
-			arrList1.add(entry.getValue());
+			arrList1.add(entry.getValue().size());
 		}
 
 		for (Map.Entry<String, Map<String, String>> entry : dataMap2.entrySet()) {
-			arrList2.add(entry.getValue());
+			arrList2.add(entry.getValue().size());
 		}
 
 		Assert.assertEquals(arrList1, arrList2);
